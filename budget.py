@@ -1,43 +1,32 @@
 # -----------------------------------------------
-# P.6.3
+# P.7.6
 # -----------------------------------------------
-# • Patobulinti 5 pamokos biudžeto programą taip, kad joje:
+# • Perdaryti biudžeto programą su klasėmis (iš praėjusios paskaitos) taip,
+#   kad:
+#   • Kiekviena klasė persikeltų į atskirą, tik jai skirtą .py failą.
+#   • Pajamos ir išlaidos programos pradžioje būtų nuskaitytos (angl. loaded)
+#     iš .pkl failo (naudojant modulį pickle).
+#   • Pajamos ir išlaidos programos pabaigoje būtų išsaugotos (angl. dumped) į
+#     .pkl failą (naudojant modulį pickle).
 #
-#   • Irasas klasėje būtų tik vienas atributas suma, ir būtų sukurtos dvi
-#     vaikinės klasės PajamuIrasas ir IslaiduIrasas.
-#   • Klasė PajamuIrasas turėtų du papildomus atributus siuntejas ir
-#     papildoma_informacija.
-#   • Klasė IslaiduIrasas turėtų du papildomus atributus atsiskaitymo_budas ir
-#     isigyta_preke_paslauga.
-#   • Klasės Biudzetas metodai parodyti_balansa() ir parodyti_ataskaita() būtų
-#     perdaryti taip, kad jie nuskaitytų kiekvieną įrašą iš žurnalo ir
-#     atpažinę, ar tai pajamų įrašas, ar išlaidų (pvz., naudojant Python
-#     funkciją isinstance()), atspausdintų reikiamą informaciją kaip ir prieš
-#     tai.
-#   • Būtų vartotojo sąsaja per komandinę eilutę (Command-Line Interface (CLI),
-#     kas savo ruožtu yra vienas iš galimų Text-Based User Interface (TUI)
-#     tipų), per kurią vartotojas galėtų įvesti pajamų ir išlaidų įrašus po
-#     vieną ir pamatyti balansą bei ataskaitą.
+# Galima pasirinkti, kaip pajamos ir išlaidos bus išsaugomos į .pkl failą –
+# kaip objektas, kaip skaičių sąrašas, ar pan. – svarbu, kad iš .pkl failo būtų
+# nuskaitoma tokiu pat būdu (į objektą, į skaičių sąrašą, ar pan.).
 # -----------------------
-# • Modify the "Budget" program from the previous lesson (Python lesson 5,
-#   exercise no. 5) so that it would have:
+# • Refactor the "Budget" program from the previous lesson (Python lesson 6,
+#   exercise no. 3) such that:
+#   • Every class appears in its own .py file.
+#   • Income and expenses are loaded from a .pkl file at the start of the
+#     program (using pickle module).
+#   • Income and expenses are saved (dumped) to a .pkl file at the end of the
+#     program (using pickle module).
 #
-#   • The Entry class only have a single attribute amount, and create its child
-#     classes IncomeEntry and ExpensesEntry.
-#   • The IncomeEntry class have two additional attributes sender and
-#     additional_info.
-#   • The ExpensesEntry class have two additional attributes payment_option and
-#     received_good_or_service.
-#   • Refactored Budget class methods print_income_statement() and
-#     print_ie_account() so that they would read every entry in a log and
-#     recognize whether it is an income entry or an expenses entry (for
-#     example, using the isinstance() method) and print the required
-#     information as previously.
-#   • A Command-Line Interface (CLI) (one possible type of a Text-Based User
-#     Interface (TUI)) so that a user, using the command-line, could enter the
-#     income and expenses entries one by one, and view both the Income
-#     Statement and Income and Expenditure Account.
+# You can chooose how income and expenses are saved to a .pkl file - as an
+# object, as a list of numbers, etc. - the important thing is that they should
+# be loaded in the same way (into an object, a list of numbers, etc.).
 # -----------------------------------------------
+
+import pickle
 
 
 class Entry:
@@ -52,8 +41,7 @@ class IncomeEntry(Entry):
         self.info = info
 
     def __str__(self):
-        return (
-            f"Income: {self.amount}, Sender: {self.sender}, Additional info: {self.info}")
+        return f"Income: {self.amount}, Sender: {self.sender}, Additional info: {self.info}"
 
 
 class ExpensesEntry(Entry):
@@ -108,6 +96,14 @@ class Budget:
             print(entry)
         print(40 * "-")
 
+    def save_to_file(self):
+        with open("budget.pkl", "wb") as pickle_out:
+            pickle.dump(self.log, pickle_out)
+
+    def extract_from_file(self):
+        with open("budget.pkl", "rb") as pickle_in:
+            self.log = pickle.load(pickle_in)
+
 
 budget = Budget()
 
@@ -120,7 +116,9 @@ def main():
                                "2 - Add expenses.\n"
                                "3 - View income statement (balance).\n"
                                "4 - View income and expenditure account (report).\n"
-                               "5 - Quit.\n"
+                               "5 - Save your budget to a file.\n"
+                               "6 - Read your budget from a file.\n"
+                               "7 - Quit.\n"
                                "> "))
 
             match choice:
@@ -139,10 +137,17 @@ def main():
                 case 4:
                     budget.print_ie_account()
                 case 5:
+                    budget.save_to_file()
+                    print("Your entries have been saved to the budget list.")
+                case 6:
+                    print("Here is your budget list:")
+                    budget.extract_from_file()
+                    budget.print_ie_account()
+                case 7:
                     print("Goodbye!")
                     break
                 case _:
-                    print("Error: Your action should be a number between 1 and 5!")
+                    print("Error: Your action should be a number between 1 and 7!")
         except ValueError:
             print("Error: Invalid action or value!")
 
