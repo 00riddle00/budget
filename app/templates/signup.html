@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}BudgetApp | Sign Up{% endblock %}
+
+{% block content %}
+    <div class="auth_field" data-bs-theme="dark">
+        <div class="card" style="width: 300px; margin-top: 50px">
+            <div class="card-header">
+                <strong>Create an account</strong>
+            </div>
+            <div class="card-body">
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        <div class="notification is-danger">
+                            {{ messages[0] }}
+                        </div>
+                    {% endif %}
+                {% endwith %}
+                <form action="/signup" method="post">
+                    {{ form.hidden_tag() }}
+                    <div style="margin-top: 8px">
+                        {{ form.username(class="form-control", placeholder="Username...") }}
+                    </div>
+                    {% if form.username.errors %}
+                        {% for error in form.username.errors %}
+                            <small style="color: #ca472f">{{ error }}</small>
+                        {% endfor %}
+                    {% endif %}
+
+                    <div style="margin-top: 8px">
+                        {{ form.email(class="form-control", placeholder="Email...") }}
+                    </div>
+                    {% if form.email.errors %}
+                        {% for error in form.email.errors %}
+                            <small style="color: #ca472f">{{ error }}</small>
+                        {% endfor %}
+                    {% endif %}
+
+                    <div style="margin-top: 8px">
+                        {{ form.password(class="form-control", placeholder="Password...") }}
+                    </div>
+                    {% if form.password.errors %}
+                        {% for error in form.password.errors %}
+                            <small style="color: #ca472f">{{ error }}</small>
+                        {% endfor %}
+                    {% endif %}
+
+                    <div style="margin-top: 8px">
+                        {{ form.confirm_password(class="form-control", placeholder="Confirm password...") }}
+                    </div>
+                    {% if form.confirm_password.errors %}
+                        {% for error in form.confirm_password.errors %}
+                            <small style="color: #ca472f">{{ error }}</small>
+                        {% endfor %}
+                    {% endif %}
+                    <div class="col-12 text-center" style="margin-top: 12px">
+                        {{ form.submit(class="btn btn-primary", value="Sign Up") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

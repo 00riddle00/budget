@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if current_user.is_authenticated %}
+        {{ current_user.username }}'s Profile
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="auth_field" data-bs-theme="dark">
+        <div class="card" style="width: 300px; margin-top: 50px">
+            <div class="card-header">
+                <strong>
+                    {{ current_user.username }}'s Profile
+                </strong>
+            </div>
+            <div class="card-body">
+                <form action="{{ url_for('auth.user_update') }}" method="post" enctype="multipart/form-data">
+                    {{ form.hidden_tag() }}
+                    <img class="rounded-circle account-img" src="{{ picture_url }}" width="50" height="50">
+                    <div class="mb-3">
+                        {{ form.username.label }}
+                        {{ form.username }}
+                        {% if form.username.errors %}
+                            {% for error in form.username.errors %}
+                                <small style="color: red">{{ error }}</small>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.email.label }}
+                        {{ form.email }}
+                        {% if form.email.errors %}
+                            {% for error in form.email.errors %}
+                                <small style="color: red">{{ error }}</small>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.profile_picture.label }}
+                        {{ form.profile_picture }}
+                        {% if form.profile_picture.errors %}
+                            {% for error in form.profile_picture.errors %}
+                                <small style="color: red">{{ error }}</small>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                    {{ form.submit }}
+                </form>
+                <!-- Step 1
+                FOTO
+                USERNAME
+                EMAIL
+                -->
+
+                <!-- Step 2
+                REDAGAVIMAS USER
+                REDAGAVIMAS PASSWORD
+                REDAGAVIMAS EMAIL
+                REDAGAVIMAS FOTO
+                -->
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
