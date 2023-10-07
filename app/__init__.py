@@ -1,33 +1,35 @@
 from config import config
 from flask import Flask
 from flask_login import LoginManager
-
 from flask_sqlalchemy import SQLAlchemy
 
 login_manager = LoginManager()
-login_manager.login_view = 'auth.login'
+login_manager.login_view = "auth.login"
 
 db = SQLAlchemy()
 
 
 def create_app(config_name):
-	app = Flask(__name__)
-	app.config.from_object(config[config_name])
-	config[config_name].init_app(app)
+    app = Flask(__name__)
+    app.config.from_object(config[config_name])
+    config[config_name].init_app(app)
 
-	login_manager.init_app(app)
+    login_manager.init_app(app)
 
-	db.init_app(app)
+    db.init_app(app)
 
-	# TODO: attach routes and custom error pages here
+    # TODO: attach routes and custom error pages here
 
-	from .main import main as main_blueprint
-	app.register_blueprint(main_blueprint)
+    from .main import main as main_blueprint
 
-	from .auth import auth as auth_blueprint
-	app.register_blueprint(auth_blueprint)
+    app.register_blueprint(main_blueprint)
 
-	return app
+    from .auth import auth as auth_blueprint
+
+    app.register_blueprint(auth_blueprint)
+
+    return app
+
 
 # # Create the app.
 # app = Flask(__name__,
