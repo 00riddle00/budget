@@ -36,6 +36,9 @@
                 {% endif %}
                 <div class="col-12 text-center" style="margin-top: 12px">
                     {{ form.submit(class="btn btn-primary", value="Login") }}
+                    <small class="text-muted ml-2">
+                        <a href="{{ url_for('auth.reset_request') }}">Pamiršote slaptažodį?</a>
+                    </small>
                 </div>
             </form>
         </div>
