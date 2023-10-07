@@ -3,17 +3,12 @@
 {% block title %}BudgetApp{% endblock %}
 
 {% block content %}
-    <div class="auth_field" style="color: white; padding-top: 20px">
-        {% if current_user.is_authenticated %}
-            <h3>Welcome, {{ current_user.username }}!</h3>
-        {% endif %}
-    </div>
-    <div class="auth_field">
-        <img src="../static/piggy_pic.png" alt="Piggy pic" width="320px">
-    </div>
-    {#    <div>#}
-    {#        {% if current_user.is_authenticated %}#}
-    {#            Welcome, {{ current_user.username }}!#}
-    {#        {% endif %}#}
-    {#    </div>#}
+<div class="auth_field" style="color: white; padding-top: 20px">
+    {% if current_user.is_authenticated %}
+        <h3>Welcome, {{ current_user.username }}!</h3>
+    {% endif %}
+</div>
+<div class="auth_field">
+    <img src="../static/piggy_pic.png" alt="Piggy pic" width="320px">
+</div>
 {% endblock %}

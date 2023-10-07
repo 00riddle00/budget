@@ -37,8 +37,8 @@
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                        aria-expanded="false" style="padding-right: 50px">
                         <img class="rounded-circle account-img" src="{{ picture_url }}" width="25" height="25">
-{#                        Authentication#}
                     </a>
+                    {# Authentication #}
                     <ul class="dropdown-menu">
                         {% if current_user.is_authenticated %}
                             <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
@@ -53,7 +53,8 @@
     </div>
 </nav>
 
-{% block content %}{% endblock %}
+{% block content %}
+{% endblock %}
 
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
         integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
