@@ -143,7 +143,7 @@ def reset_token(token):
         hashed_password = generate_password_hash(
             form.slaptazodis.data, method="scrypt"
         )
-        user.slaptazodis = hashed_password
+        user.password = hashed_password
         db.session.commit()
         flash("Tavo slaptažodis buvo atnaujintas! Gali prisijungti", "success")
         return redirect(url_for("auth.login"))
