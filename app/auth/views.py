@@ -111,7 +111,7 @@ def send_reset_email(user):
 @auth.route("/reset_password", methods=["GET", "POST"])
 def reset_request():
     if current_user.is_authenticated:
-        return redirect(url_for("home"))
+        return redirect(url_for("main.index"))
     form = RequestPasswordResetForm()
     try:
         if form.validate_on_submit():
@@ -133,7 +133,7 @@ def reset_request():
 @auth.route("/reset_password/<token>", methods=["GET", "POST"])
 def reset_token(token):
     if current_user.is_authenticated:
-        return redirect(url_for("home"))
+        return redirect(url_for("main.index"))
     user = User.verify_reset_token(token)
     if user is None:
         flash("Užklausa netinkama arba pasibaigusio galiojimo", "warning")
