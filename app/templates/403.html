@@ -1,10 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>403</title>
-</head>
-<body>
-<h1>403: Page not found.</h1>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}403{% endblock %}
+
+{% block content %}
+    <h1>Error 403: Forbidden.</h1>
+    <h2>You do not have enough rights to perform this action or access this page.</h2>
+{% endblock %}
