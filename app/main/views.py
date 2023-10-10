@@ -12,7 +12,7 @@ from . import main
 from .forms import ExpenseForm, IncomeForm, UserUpdateForm
 
 
-def get_entries():
+def get_user_entries():
     userid = current_user.id
     # Query the database for the user's entries.
     income_data = Income.query.filter_by(user_id=userid).all()
@@ -36,6 +36,22 @@ def load_user_picture():
     return picture_url
 
 
+def save_user_picture(form_picture):
+    random_hex = secrets.token_hex(8)
+    _, f_ext = os.path.splitext(form_picture.filename)
+    picture_fn = random_hex + f_ext
+    picture_path = os.path.join(
+        current_app.root_path, "static/user_profile_pictures", picture_fn
+    )
+
+    output_size = (125, 125)
+    i = Image.open(form_picture)
+    i.thumbnail(output_size)
+    i.save(picture_path)
+
+    return picture_fn
+
+
 @main.route("/")
 def index():
     picture_url = load_user_picture()
@@ -50,7 +66,7 @@ def user_update():
     form.email.data = current_user.email
     if form.validate_on_submit():
         if form.profile_picture.data:
-            picture_name = save_picture(form.profile_picture.data)
+            picture_name = save_user_picture(form.profile_picture.data)
             current_user.profile_picture = picture_name
         current_user.username = form.username.data
         current_user.email = form.email.data
@@ -58,22 +74,6 @@ def user_update():
         return redirect(url_for("main.user_update"))
     picture_url = load_user_picture()
     return render_template("profile.html", form=form, picture_url=picture_url)
-
-
-def save_picture(form_picture):
-    random_hex = secrets.token_hex(8)
-    _, f_ext = os.path.splitext(form_picture.filename)
-    picture_fn = random_hex + f_ext
-    picture_path = os.path.join(
-        current_app.root_path, "static/user_profile_pictures", picture_fn
-    )
-
-    output_size = (125, 125)
-    i = Image.open(form_picture)
-    i.thumbnail(output_size)
-    i.save(picture_path)
-
-    return picture_fn
 
 
 @main.route("/budget", methods=["GET", "POST"])
@@ -128,7 +128,7 @@ def budget():
             income_total,
             expense_total,
             balance,
-        ) = get_entries()
+        ) = get_user_entries()
         return render_template(
             "budget.html",
             income_data=income_data,
@@ -147,7 +147,7 @@ def budget():
             income_total,
             expense_total,
             balance,
-        ) = get_entries()
+        ) = get_user_entries()
         return render_template(
             "budget.html",
             income_data=income_data,
@@ -180,7 +180,7 @@ def remove_entry(table, entry_id):
         income_total,
         expense_total,
         balance,
-    ) = get_entries()
+    ) = get_user_entries()
     return render_template(
         "budget.html",
         income_data=income_data,
