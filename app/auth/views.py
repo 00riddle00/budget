@@ -1,9 +1,8 @@
 from flask import flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required, login_user, logout_user
-from flask_mail import Message
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from .. import db, mail
+from .. import db
 from ..email import send_email
 from ..main.views import load_user_picture
 from ..models import User

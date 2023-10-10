@@ -23,7 +23,7 @@ def send_async_email(app, msg):
 def send_email(to, subject, template, **kwargs):
     """Send an email using a HTML template (and a plain text alternative).
 
-    :param **kwargs: These arguments will be resent to templates to be used
+    :param: **kwargs: These arguments will be resent to templates to be used
     there, e.g. user=user.
 
     To avoid unnecessary delays during request handling, the email send
