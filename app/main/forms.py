@@ -1,48 +1,10 @@
 from flask_login import current_user
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed, FileField
-from wtforms import (
-    PasswordField,
-    RadioField,
-    StringField,
-    SubmitField,
-    TextAreaField,
-)
-from wtforms.validators import (
-    DataRequired,
-    Email,
-    EqualTo,
-    InputRequired,
-    Length,
-    ValidationError,
-)
+from wtforms import RadioField, StringField, SubmitField, TextAreaField
+from wtforms.validators import DataRequired, Email, Length, ValidationError
 
 from ..models import User
-
-
-def validate_amount(_form, amount):
-    if not amount.data.isdigit():
-        raise ValidationError("Amount must be a number.")
-    if float(amount.data) <= 0:
-        raise ValidationError("Amount must be greater than 0.")
-
-
-def validate_username_if_not_exists(_form, username):
-    user = User.query.filter_by(username=username.data).first()
-    if user:
-        raise ValidationError("Username already exists.")
-
-
-def validate_username_if_exists(_form, username):
-    user = User.query.filter_by(username=username.data).first()
-    if not user:
-        raise ValidationError("Username does not exist.")
-
-
-def validate_email(_form, email):
-    user = User.query.filter_by(email=email.data).first()
-    if user:
-        raise ValidationError("Email already exists.")
 
 
 def validate_username_if_not_exists_update(_form, username):
@@ -61,49 +23,11 @@ def validate_email_update(_form, email):
         raise ValidationError("Email already exists.")
 
 
-class RegisterForm(FlaskForm):
-    username = StringField(
-        "Username",
-        validators=[
-            DataRequired(),
-            Length(min=5, max=30),
-            validate_username_if_not_exists,
-        ],
-    )
-    email = StringField(
-        "Email",
-        validators=[
-            DataRequired(),
-            Length(min=6, max=250),
-            Email(message="Invalid email."),
-            validate_email,
-        ],
-    )
-    password = PasswordField(
-        "Password",
-        validators=[
-            InputRequired(),
-            EqualTo("confirm_password", message="Passwords don't match."),
-            Length(min=8, max=250),
-        ],
-    )
-    confirm_password = PasswordField("Confirm Password")
-    submit = SubmitField("Sign Up")
-
-
-class LoginForm(FlaskForm):
-    username = StringField(
-        "Username",
-        validators=[
-            DataRequired(),
-            Length(min=5, max=30),
-            validate_username_if_exists,
-        ],
-    )
-    password = PasswordField(
-        "Password", validators=[DataRequired(), Length(min=8, max=250)]
-    )
-    submit = SubmitField("Login")
+def validate_amount(_form, amount):
+    if not amount.data.isdigit():
+        raise ValidationError("Amount must be a number.")
+    if float(amount.data) <= 0:
+        raise ValidationError("Amount must be greater than 0.")
 
 
 class UserUpdateForm(FlaskForm):
