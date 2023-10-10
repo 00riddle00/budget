@@ -6,8 +6,8 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 class Config:
     APP_NAME = os.environ.get("APP_NAME", "Budget App")
 
-    # The Flask-SQLAlchemy documentation also suggests to set this key to False
-    # to use less memory unless signals for object changes are needed.
+    # The Flask-SQLAlchemy documentation also suggests to set this key to
+    # `False` to use less memory unless signals for object changes are needed.
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_RECORD_QUERIES = True
 

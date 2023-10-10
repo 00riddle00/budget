@@ -47,7 +47,7 @@ export SECRET_KEY="{YOUR SECRET KEY}"
 
 #### [2] Initial setup:
 
-##### Create the migrations folder:
+##### Create the migrations' folder:
 
 ```Shell
 flask --app budget.py db init # It needs to be run only once, at the beginning.
