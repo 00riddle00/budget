@@ -93,7 +93,7 @@ def logout():
 
 
 def send_reset_email(user):
-    token = user.get_reset_token()
+    token = user.generate_reset_token()
     msg = Message(
         "Slaptažodžio atnaujinimo užklausa",
         sender="ptua6.real4dmin@gmail.com",
