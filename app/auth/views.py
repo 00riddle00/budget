@@ -1,5 +1,5 @@
 from flask import flash, redirect, render_template, request, url_for
-from flask_login import current_user, login_user, logout_user
+from flask_login import current_user, login_required, login_user, logout_user
 from flask_mail import Message
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -80,6 +80,7 @@ def signup():
 
 
 @auth.route("/logout")
+@login_required
 def logout():
     logout_user()
     picture_url = load_user_picture()
