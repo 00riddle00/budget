@@ -1,6 +1,6 @@
 ![App logo](app/static/img/app_logo_for_readme.png)
 
-# Budget - a finance management app!
+# Budget - a Finance Management App!
 
 # Installation
 
