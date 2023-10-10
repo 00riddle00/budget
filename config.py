@@ -11,8 +11,8 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_RECORD_QUERIES = True
 
-    SECRET_KEY = (
-        os.getenv("SECRET_KEY") or b"LPhW~G@?b{*k'8;&MQbT=[~(M-VzDMKk.rP$kAnK"
+    SECRET_KEY = os.environ.get(
+        "SECRET_KEY", b"LPhW~G@?b{*k'8;&MQbT=[~(M-VzDMKk.rP$kAnK"
     )
     MAIL_SERVER = os.environ.get("MAIL_SERVER", "smtp.gmail.com")
     MAIL_PORT = int(os.environ.get("MAIL_PORT", "587"))
