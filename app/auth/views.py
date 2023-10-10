@@ -4,7 +4,6 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from .. import db
 from ..email import send_email
-from ..main.views import load_user_picture
 from ..models import User
 from . import auth
 from .forms import (
@@ -29,7 +28,7 @@ def login():
         # If the user doesn't exist or the password is incorrect, redirects
         # to the login page.
         if user is None or not check_password_hash(
-                user.password_hash, password
+            user.password_hash, password
         ):
             flash("Please check your login details and try again.")
             return redirect(url_for("auth.login"))
@@ -39,7 +38,7 @@ def login():
 
         return redirect(url_for("main.index"))
     else:
-        picture_url = load_user_picture()
+        picture_url = User.get_picture_url(current_user)
         return render_template(
             "auth/login.html", form=form, picture_url=picture_url
         )
@@ -73,7 +72,7 @@ def signup():
             return redirect(url_for("auth.signup"))
         return redirect(url_for("main.budget"))
     else:
-        picture_url = load_user_picture()
+        picture_url = User.get_picture_url(current_user)
         return render_template(
             "auth/signup.html", form=form, picture_url=picture_url
         )
@@ -83,7 +82,7 @@ def signup():
 @login_required
 def logout():
     logout_user()
-    picture_url = load_user_picture()
+    picture_url = User.get_picture_url(current_user)
     return render_template("index.html", picture_url=picture_url)
 
 

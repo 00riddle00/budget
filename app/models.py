@@ -1,10 +1,12 @@
 """Here reside database models, used by ORM."""
-
+import os
+import secrets
 from datetime import datetime
 
-from flask import current_app
+from flask import current_app, url_for
 from flask_login import UserMixin
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from PIL import Image
 from sqlalchemy import DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -57,6 +59,37 @@ class User(UserMixin, db.Model):
         self.username = username
         self.password_hash = password_hash
         self.email = email
+
+    def get_entries(self):
+        # Query the database for the user's entries.
+        income_data = Income.query.filter_by(user_id=self.id).all()
+        expense_data = Expense.query.filter_by(user_id=self.id).all()
+        income_total = sum([i.amount for i in income_data])
+        expense_total = sum([i.amount for i in expense_data])
+        balance = income_total - expense_total
+        return income_data, expense_data, income_total, expense_total, balance
+
+    def get_picture_url(self):
+        user_picture = "default.jpg"
+        if self.is_authenticated:
+            user_picture = self.profile_picture
+        return url_for(
+            "static", filename=f"user_profile_pictures/{user_picture}"
+        )
+
+    @staticmethod
+    def upload_picture_and_get_url(form_picture):
+        random_hex = secrets.token_hex(8)
+        _, f_ext = os.path.splitext(form_picture.filename)
+        picture_fn = random_hex + f_ext
+        picture_path = os.path.join(
+            current_app.root_path, "static/user_profile_pictures", picture_fn
+        )
+        output_size = (125, 125)
+        i = Image.open(form_picture)
+        i.thumbnail(output_size)
+        i.save(picture_path)
+        return picture_fn
 
     def generate_reset_token(self, expiration=3600):
         s = Serializer(current_app.config["SECRET_KEY"], expiration)
