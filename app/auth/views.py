@@ -34,7 +34,7 @@ def login():
         user = User.query.filter_by(username=username).first()
 
         # If the user doesn't exist or the password is incorrect, redirects to the login page.
-        if not user or not check_password_hash(user.password, password):
+        if not user or not check_password_hash(user.password_hash, password):
             flash("Please check your login details and try again.")
             return redirect(url_for("auth.login"))
 
@@ -63,7 +63,7 @@ def signup():
         new_user = User(
             username=username,
             email=email,
-            password=generate_password_hash(password, method="scrypt"),
+            password_hash=generate_password_hash(password, method="scrypt"),
         )
 
         try:
@@ -143,7 +143,7 @@ def reset_token(token):
         hashed_password = generate_password_hash(
             form.slaptazodis.data, method="scrypt"
         )
-        user.password = hashed_password
+        user.password_hash = hashed_password
         db.session.commit()
         flash("Tavo slaptažodis buvo atnaujintas! Gali prisijungti", "success")
         return redirect(url_for("auth.login"))

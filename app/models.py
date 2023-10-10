@@ -14,10 +14,6 @@ def user_loader(user_id):
     return User.query.get(int(user_id))
 
 
-# class Entry(db.Model):
-# 	type = db.Column(db.String(64), index=True) Bool as an option
-
-
 class Income(db.Model):
     __tablename__ = "income"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -43,7 +39,7 @@ class User(UserMixin, db.Model):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     username: Mapped[str] = mapped_column(String, unique=True, nullable=False)
-    password: Mapped[str] = mapped_column(String, unique=True, nullable=False)
+    password_hash: Mapped[str] = mapped_column(String, nullable=False)
     email: Mapped[str] = mapped_column(String, unique=True, nullable=False)
     profile_picture: Mapped[str] = mapped_column(
         String, nullable=False, default="default.jpg"
@@ -51,9 +47,9 @@ class User(UserMixin, db.Model):
     entries_income: Mapped["Income"] = relationship("Income")
     entries_expenses: Mapped["Expense"] = relationship("Expense")
 
-    def __init__(self, username, password, email):
+    def __init__(self, username, password_hash, email):
         self.username = username
-        self.password = password
+        self.password_hash = password_hash
         self.email = email
 
     def get_reset_token(self, expires_sec=1800):
