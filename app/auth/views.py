@@ -41,7 +41,7 @@ def login():
     else:
         picture_url = load_user_picture()
         return render_template(
-            "login.html", form=form, picture_url=picture_url
+            "auth/login.html", form=form, picture_url=picture_url
         )
 
 
@@ -75,7 +75,7 @@ def signup():
     else:
         picture_url = load_user_picture()
         return render_template(
-            "signup.html", form=form, picture_url=picture_url
+            "auth/signup.html", form=form, picture_url=picture_url
         )
 
 
@@ -113,7 +113,7 @@ def password_reset_request():
         flash(f"An error occurred while registering: {e}")
         return redirect(url_for("auth.password_reset_request"))
     return render_template(
-        "reset_request.html", title="Reset Password", form=form
+        "auth/reset_request.html", title="Reset Password", form=form
     )
 
 
@@ -138,5 +138,5 @@ def password_reset(token):
         )
         return redirect(url_for("auth.login"))
     return render_template(
-        "reset_token.html", title="Reset Password", form=form
+        "auth/reset_token.html", title="Reset Password", form=form
     )
