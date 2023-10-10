@@ -136,7 +136,7 @@ def reset_token(token):
     form = PasswordResetForm()
     if form.validate_on_submit():
         hashed_password = generate_password_hash(
-            form.slaptazodis.data, method="scrypt"
+            form.password.data, method="scrypt"
         )
         user.password_hash = hashed_password
         db.session.commit()
