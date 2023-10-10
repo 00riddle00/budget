@@ -15,8 +15,8 @@ from .forms import ExpenseForm, IncomeForm, UserUpdateForm
 def get_entries():
     userid = current_user.id
     # Query the database for the user's entries.
-    income_data = db.session.query(Income).filter_by(user_id=userid).all()
-    expense_data = db.session.query(Expense).filter_by(user_id=userid).all()
+    income_data = Income.query.filter_by(user_id=userid).all()
+    expense_data = Expense.query.filter_by(user_id=userid).all()
     income_total = sum([i.amount for i in income_data])
     expense_total = sum([i.amount for i in expense_data])
     balance = income_total - expense_total
@@ -158,16 +158,16 @@ def budget():
         )
 
 
-@main.route("/remove_entry/<table>/<entry_id>", methods=["GET", "POST"])
+@main.route("/remove_entry/<table>/<entry_id:int>", methods=["GET", "POST"])
 def remove_entry(table, entry_id):
     form_income = IncomeForm()
     form_expense = ExpenseForm()
     if table == "Income":
-        income_entry = Income.query.get_or_404(int(entry_id))
+        income_entry = Income.query.get_or_404(entry_id)
         db.session.delete(income_entry)
         db.session.commit()
     elif table == "Expense":
-        expense_entry = Expense.query.get_or_404(int(entry_id))
+        expense_entry = Expense.query.get_or_404(entry_id)
         db.session.delete(expense_entry)
         db.session.commit()
     (

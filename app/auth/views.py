@@ -28,7 +28,9 @@ def login():
 
         # If the user doesn't exist or the password is incorrect, redirects
         # to the login page.
-        if not user or not check_password_hash(user.password_hash, password):
+        if user is None or not check_password_hash(
+            user.password_hash, password
+        ):
             flash("Please check your login details and try again.")
             return redirect(url_for("auth.login"))
 
@@ -36,7 +38,6 @@ def login():
         login_user(user)
 
         return redirect(url_for("main.index"))
-
     else:
         picture_url = load_user_picture()
         return render_template(
@@ -70,7 +71,6 @@ def signup():
             db.session.rollback()  # Rollback changes if there's an error
             flash(f"An error occurred while registering: {e}")
             return redirect(url_for("auth.signup"))
-
         return redirect(url_for("main.budget"))
     else:
         picture_url = load_user_picture()
