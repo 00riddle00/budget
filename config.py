@@ -19,7 +19,6 @@ class Config:
     )
     MAIL_SERVER = os.environ.get("MAIL_SERVER", "smtp.gmail.com")
     MAIL_PORT = int(os.environ.get("MAIL_PORT", "587"))
-    MAIL_USE_TLS = True
     MAIL_USE_TLS = os.environ.get("MAIL_USE_TLS", "true").lower() in [
         "true",
         "on",
@@ -35,7 +34,8 @@ class Config:
     )
     MAIL_SENDER = f"{APP_NAME} HQ <{MAIL_SENDER_EMAIL}>"
 
-    def init_app(self):
+    @staticmethod
+    def init_app(app):
         pass
 
 
