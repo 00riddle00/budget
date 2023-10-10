@@ -21,3 +21,6 @@ class BasicsTestCase(unittest.TestCase):
 
     def test_app_is_testing(self):
         self.assertTrue(current_app.config["TESTING"])
+
+    def test_app_secret_key_is_long(self):
+        self.assertGreaterEqual(len(current_app.config["SECRET_KEY"]), 20)
