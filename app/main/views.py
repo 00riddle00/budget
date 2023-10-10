@@ -26,10 +26,13 @@ def get_entries():
 def load_user_picture():
     if current_user.is_authenticated:
         picture_url = url_for(
-            "static", filename=f"pfp/{current_user.profile_picture}"
+            "static",
+            filename=f"user_profile_pictures/{current_user.profile_picture}",
         )
     else:
-        picture_url = url_for("static", filename="pfp/default.jpg")
+        picture_url = url_for(
+            "static", filename="user_profile_pictures/default.jpg"
+        )
     return picture_url
 
 
@@ -62,7 +65,7 @@ def save_picture(form_picture):
     _, f_ext = os.path.splitext(form_picture.filename)
     picture_fn = random_hex + f_ext
     picture_path = os.path.join(
-        current_app.root_path, "static/pfp", picture_fn
+        current_app.root_path, "static/user_profile_pictures", picture_fn
     )
 
     output_size = (125, 125)
