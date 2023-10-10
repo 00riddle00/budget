@@ -1,3 +1,5 @@
+"""Here reside database models, used by ORM."""
+
 from flask import current_app
 from flask_login import UserMixin
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
@@ -17,6 +19,7 @@ def user_loader(user_id):
 
 
 class Income(db.Model):
+    __tablename__ = "income"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey("user.id"))
     amount: Mapped[float] = mapped_column(Float)
@@ -25,7 +28,8 @@ class Income(db.Model):
     entry_date: Mapped[str] = mapped_column(String)
 
 
-class Expenses(db.Model):
+class Expense(db.Model):
+    __tablename__ = "expense"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey("user.id"))
     amount: Mapped[float] = mapped_column(Float)
@@ -35,6 +39,8 @@ class Expenses(db.Model):
 
 
 class User(UserMixin, db.Model):
+    """A user is the single most important component of our web app."""
+
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     username: Mapped[str] = mapped_column(String, unique=True, nullable=False)
     password: Mapped[str] = mapped_column(String, unique=True, nullable=False)
@@ -43,7 +49,7 @@ class User(UserMixin, db.Model):
         String, nullable=False, default="default.jpg"
     )
     entries_income: Mapped["Income"] = relationship("Income")
-    entries_expenses: Mapped["Expenses"] = relationship("Expenses")
+    entries_expenses: Mapped["Expense"] = relationship("Expense")
 
     def __init__(self, username, password, email):
         self.username = username

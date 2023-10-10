@@ -4,7 +4,7 @@ from flask import render_template, request, url_for
 from flask_login import current_user, login_required
 
 from .. import db
-from ..models import Expenses, Income
+from ..models import Expense, Income
 from . import main
 from .forms import ExpenseForm, IncomeForm
 
@@ -13,7 +13,7 @@ def get_entries():
     userid = current_user.id
     # Query the database for the user's entries.
     income_data = db.session.query(Income).filter_by(user_id=userid).all()
-    expense_data = db.session.query(Expenses).filter_by(user_id=userid).all()
+    expense_data = db.session.query(Expense).filter_by(user_id=userid).all()
     income_total = sum([i.amount for i in income_data])
     expense_total = sum([i.amount for i in expense_data])
     balance = income_total - expense_total
@@ -73,7 +73,7 @@ def budget():
                 str(datetime.now())[0:19], "%Y-%m-%d %H:%M:%S"
             )
             db.session.add(
-                Expenses(
+                Expense(
                     amount=exp_amount,
                     user_id=userid,
                     payment_option=exp_payment_option,
@@ -129,8 +129,8 @@ def remove_entry(table, entry_id):
         income_entry = Income.query.get_or_404(int(entry_id))
         db.session.delete(income_entry)
         db.session.commit()
-    elif table == "Expenses":
-        expense_entry = Expenses.query.get_or_404(int(entry_id))
+    elif table == "Expense":
+        expense_entry = Expense.query.get_or_404(int(entry_id))
         db.session.delete(expense_entry)
         db.session.commit()
     (

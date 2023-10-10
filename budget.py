@@ -5,7 +5,7 @@
 import os
 
 from app import create_app, db
-from app.models import Expenses, Income, User
+from app.models import Expense, Income, User
 from flask_migrate import Migrate
 
 config_name = os.environ.get("FLASK_CONFIG", "default")
@@ -20,7 +20,7 @@ def make_shell_context():
         db=db,
         User=User,
         Income=Income,
-        Expenses=Expenses,
+        Expense=Expense,
     )
 
 
