@@ -4,7 +4,6 @@ from wtforms.validators import (
     DataRequired,
     Email,
     EqualTo,
-    InputRequired,
     Length,
     ValidationError,
 )
@@ -66,12 +65,17 @@ class RegisterForm(FlaskForm):
     password = PasswordField(
         "Password",
         validators=[
-            InputRequired(),
-            EqualTo("confirm_password", message="Passwords don't match."),
+            DataRequired(),
             Length(min=8, max=250),
         ],
     )
-    confirm_password = PasswordField("Confirm Password")
+    confirm_password = PasswordField(
+        "Confirm Password",
+        validators=[
+            DataRequired(),
+            EqualTo("password", message="Passwords must match."),
+        ],
+    )
     submit = SubmitField("Sign Up")
 
 
@@ -80,7 +84,6 @@ class PasswordResetRequestForm(FlaskForm):
         "Email",
         validators=[DataRequired(), Length(min=6, max=250), Email()],
     )
-
     submit = SubmitField("Reset Password")
 
     def validate_email(self, field):
@@ -96,12 +99,11 @@ class PasswordResetForm(FlaskForm):
     password = PasswordField(
         "New Password", validators=[DataRequired(), Length(min=8, max=250)]
     )
-    confirmed_password = PasswordField(
+    confirm_password = PasswordField(
         "Confirm Password",
         validators=[
             DataRequired(),
-            Length(min=8, max=250),
-            EqualTo("password"),
+            EqualTo("password", message="Passwords must match."),
         ],
     )
     submit = SubmitField("Reset Password")
