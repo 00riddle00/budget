@@ -1,12 +1,22 @@
 from flask_wtf import FlaskForm
 from wtforms import PasswordField, StringField, SubmitField
-from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
+from wtforms.validators import (
+    DataRequired,
+    Email,
+    EqualTo,
+    Length,
+    ValidationError,
+)
 
 from ..models import User
 
 
 class RequestPasswordResetForm(FlaskForm):
-    email = StringField("El. paštas", validators=[DataRequired(), Email()])
+    email = StringField(
+        "El. paštas",
+        validators=[DataRequired(), Length(min=6, max=250), Email()],
+    )
+
     submit = SubmitField("Gauti")
 
     def validate_email(self, field):
@@ -18,9 +28,15 @@ class RequestPasswordResetForm(FlaskForm):
 
 
 class PasswordResetForm(FlaskForm):
-    slaptazodis = PasswordField("Slaptažodis", validators=[DataRequired()])
+    slaptazodis = PasswordField(
+        "Slaptažodis", validators=[DataRequired(), Length(min=8, max=250)]
+    )
     patvirtintas_slaptazodis = PasswordField(
         "Pakartokite slaptažodį",
-        validators=[DataRequired(), EqualTo("slaptazodis")],
+        validators=[
+            DataRequired(),
+            Length(min=8, max=250),
+            EqualTo("slaptazodis"),
+        ],
     )
     submit = SubmitField("Atnaujinti Slaptažodį")

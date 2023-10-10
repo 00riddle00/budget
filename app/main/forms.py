@@ -66,7 +66,7 @@ class RegisterForm(FlaskForm):
         "Username",
         validators=[
             DataRequired(),
-            Length(min=5, max=20),
+            Length(min=5, max=30),
             validate_username_if_not_exists,
         ],
     )
@@ -74,6 +74,7 @@ class RegisterForm(FlaskForm):
         "Email",
         validators=[
             DataRequired(),
+            Length(min=6, max=250),
             Email(message="Invalid email."),
             validate_email,
         ],
@@ -83,7 +84,7 @@ class RegisterForm(FlaskForm):
         validators=[
             InputRequired(),
             EqualTo("confirm_password", message="Passwords don't match."),
-            Length(min=8, max=32),
+            Length(min=8, max=250),
         ],
     )
     confirm_password = PasswordField("Confirm Password")
@@ -95,12 +96,12 @@ class LoginForm(FlaskForm):
         "Username",
         validators=[
             DataRequired(),
-            Length(min=5, max=20),
+            Length(min=5, max=30),
             validate_username_if_exists,
         ],
     )
     password = PasswordField(
-        "Password", validators=[DataRequired(), Length(min=8, max=32)]
+        "Password", validators=[DataRequired(), Length(min=8, max=250)]
     )
     submit = SubmitField("Login")
 
@@ -110,7 +111,7 @@ class UserUpdateForm(FlaskForm):
         "Username",
         validators=[
             DataRequired(),
-            Length(min=5, max=20),
+            Length(min=5, max=30),
             validate_username_if_not_exists_update,
         ],
     )
@@ -118,12 +119,14 @@ class UserUpdateForm(FlaskForm):
         "Email",
         validators=[
             DataRequired(),
+            Length(min=6, max=250),
             Email(message="Invalid email."),
             validate_email_update,
         ],
     )
     profile_picture = FileField(
-        "Profile Picture", validators=[FileAllowed(["jpg", "png"])]
+        "Profile Picture",
+        validators=[FileAllowed(["jpg", "png"]), Length(min=5, max=250)],
     )
     submit = SubmitField("Update")
 
@@ -132,8 +135,12 @@ class IncomeForm(FlaskForm):
     inc_amount = StringField(
         "Amount", validators=[DataRequired(), validate_amount]
     )
-    inc_sender = StringField("Sender", validators=[DataRequired()])
-    inc_description = TextAreaField("Description", validators=[DataRequired()])
+    inc_sender = StringField(
+        "Sender", validators=[DataRequired(), Length(max=120)]
+    )
+    inc_description = TextAreaField(
+        "Description", validators=[DataRequired(), Length(max=500)]
+    )
     inc_submit = SubmitField("Submit", name="form1_submit")
 
 
@@ -141,10 +148,12 @@ class ExpenseForm(FlaskForm):
     exp_payment_option = RadioField(
         "Payment Option",
         choices=[("Cash", "Cash"), ("Card", "Card"), ("Transfer", "Transfer")],
-        validators=[DataRequired()],
+        validators=[DataRequired(), Length(max=60)],
     )
     exp_amount = StringField(
         "Amount", validators=[DataRequired(), validate_amount]
     )
-    exp_description = TextAreaField("Description", validators=[DataRequired()])
+    exp_description = TextAreaField(
+        "Description", validators=[DataRequired(), Length(max=500)]
+    )
     exp_submit = SubmitField("Submit", name="form2_submit")
