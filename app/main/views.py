@@ -158,7 +158,7 @@ def budget():
         )
 
 
-@main.route("/remove_entry/<table>/<entry_id:int>", methods=["GET", "POST"])
+@main.route("/remove_entry/<table>/<int:entry_id>", methods=["GET", "POST"])
 @login_required
 def remove_entry(table, entry_id):
     form_income = IncomeForm()
