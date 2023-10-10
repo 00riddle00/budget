@@ -30,7 +30,7 @@ def login():
         # If the user doesn't exist or the password is incorrect, redirects
         # to the login page.
         if user is None or not check_password_hash(
-            user.password_hash, password
+                user.password_hash, password
         ):
             flash("Please check your login details and try again.")
             return redirect(url_for("auth.login"))
@@ -99,14 +99,14 @@ def password_reset_request():
             token = user.generate_reset_token()
             send_email(
                 to=user.email,
-                subject="Slaptažodžio atnaujinimo užklausa",
+                subject="Password Reset Request",
                 template="auth/email/reset_password",
                 username=user.username,
                 token=token,
             )
             flash(
-                "Jums išsiųstas el. laiškas su slaptažodžio atnaujinimo "
-                "instrukcijomis.",
+                "The email with instructions to reset your password has been "
+                "sent to you.",
                 "info",
             )
             return redirect(url_for("auth.login"))
@@ -124,7 +124,7 @@ def password_reset(token):
         return redirect(url_for("main.index"))
     user = User.verify_reset_token(token)
     if user is None:
-        flash("Užklausa netinkama arba pasibaigusio galiojimo", "warning")
+        flash("The request is invalid or has expired.", "warning")
         return redirect(url_for("password_reset_request"))
     form = PasswordResetForm()
     if form.validate_on_submit():
@@ -133,7 +133,10 @@ def password_reset(token):
         )
         user.password_hash = hashed_password
         db.session.commit()
-        flash("Tavo slaptažodis buvo atnaujintas! Gali prisijungti", "success")
+        flash(
+            "Your password has been updated! You are now able to log in",
+            "success",
+        )
         return redirect(url_for("auth.login"))
     return render_template(
         "reset_token.html", title="Reset Password", form=form
