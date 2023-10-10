@@ -19,7 +19,7 @@ from ..main.forms import LoginForm, RegisterForm, UserUpdateForm
 from ..main.views import load_user_picture
 from ..models import User
 from . import auth
-from .forms import PasswordResetForm, RequestPasswordResetForm
+from .forms import PasswordResetForm, PasswordResetRequestForm
 
 
 @auth.route("/login", methods=["GET", "POST"])
@@ -112,7 +112,7 @@ def send_reset_email(user):
 def reset_request():
     if current_user.is_authenticated:
         return redirect(url_for("main.index"))
-    form = RequestPasswordResetForm()
+    form = PasswordResetRequestForm()
     try:
         if form.validate_on_submit():
             user = User.query.filter_by(email=form.email.data).first()

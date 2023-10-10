@@ -11,32 +11,33 @@ from wtforms.validators import (
 from ..models import User
 
 
-class RequestPasswordResetForm(FlaskForm):
+class PasswordResetRequestForm(FlaskForm):
     email = StringField(
-        "El. paštas",
+        "Email",
         validators=[DataRequired(), Length(min=6, max=250), Email()],
     )
 
-    submit = SubmitField("Gauti")
+    submit = SubmitField("Reset Password")
 
     def validate_email(self, field):
         user = User.query.filter_by(email=field.data).first()
         if user is None:
             raise ValidationError(
-                "Nėra paskyros, registruotos šiuo el. pašto adresu. Registruokitės."
+                "There is no account with this email address. Please "
+                "register first."
             )
 
 
 class PasswordResetForm(FlaskForm):
-    slaptazodis = PasswordField(
-        "Slaptažodis", validators=[DataRequired(), Length(min=8, max=250)]
+    password = PasswordField(
+        "New Password", validators=[DataRequired(), Length(min=8, max=250)]
     )
-    patvirtintas_slaptazodis = PasswordField(
-        "Pakartokite slaptažodį",
+    confirmed_password = PasswordField(
+        "Confirm Password",
         validators=[
             DataRequired(),
             Length(min=8, max=250),
-            EqualTo("slaptazodis"),
+            EqualTo("password"),
         ],
     )
-    submit = SubmitField("Atnaujinti Slaptažodį")
+    submit = SubmitField("Reset Password")
