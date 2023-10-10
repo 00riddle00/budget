@@ -7,36 +7,12 @@ from wtforms.validators import DataRequired, Email, Length, ValidationError
 from ..models import User
 
 
-def validate_username_if_not_exists_update(_form, username):
-    if current_user.username == username.data:
-        return
-    user = User.query.filter_by(username=username.data).first()
-    if user:
-        raise ValidationError("Username already exists.")
-
-
-def validate_email_update(_form, email):
-    if current_user.email == email.data:
-        return
-    user = User.query.filter_by(email=email.data).first()
-    if user:
-        raise ValidationError("Email already exists.")
-
-
-def validate_amount(_form, amount):
-    if not amount.data.isdigit():
-        raise ValidationError("Amount must be a number.")
-    if float(amount.data) <= 0:
-        raise ValidationError("Amount must be greater than 0.")
-
-
 class UserUpdateForm(FlaskForm):
     username = StringField(
         "Username",
         validators=[
             DataRequired(),
             Length(min=5, max=30),
-            validate_username_if_not_exists_update,
         ],
     )
     email = StringField(
@@ -45,7 +21,6 @@ class UserUpdateForm(FlaskForm):
             DataRequired(),
             Length(min=6, max=250),
             Email(message="Invalid email."),
-            validate_email_update,
         ],
     )
     profile_picture = FileField(
@@ -54,11 +29,23 @@ class UserUpdateForm(FlaskForm):
     )
     submit = SubmitField("Update")
 
+    def validate_username(self, field):
+        if current_user.username == field.data:
+            return
+        user = User.query.filter_by(username=field.data).first()
+        if user:
+            raise ValidationError("Username already exists.")
+
+    def validate_email_update(self, field):
+        if current_user.email == field.data:
+            return
+        user = User.query.filter_by(email=field.data).first()
+        if user:
+            raise ValidationError("Email already exists.")
+
 
 class IncomeForm(FlaskForm):
-    inc_amount = StringField(
-        "Amount", validators=[DataRequired(), validate_amount]
-    )
+    inc_amount = StringField("Amount", validators=[DataRequired()])
     inc_sender = StringField(
         "Sender", validators=[DataRequired(), Length(max=120)]
     )
@@ -67,6 +54,12 @@ class IncomeForm(FlaskForm):
     )
     inc_submit = SubmitField("Submit", name="form1_submit")
 
+    def validate_inc_amount(self, field):
+        if not field.data.isdigit():
+            raise ValidationError("Amount must be a number.")
+        if float(field.data) <= 0:
+            raise ValidationError("Amount must be greater than 0.")
+
 
 class ExpenseForm(FlaskForm):
     exp_payment_option = RadioField(
@@ -74,10 +67,14 @@ class ExpenseForm(FlaskForm):
         choices=[("Cash", "Cash"), ("Card", "Card"), ("Transfer", "Transfer")],
         validators=[DataRequired(), Length(max=60)],
     )
-    exp_amount = StringField(
-        "Amount", validators=[DataRequired(), validate_amount]
-    )
+    exp_amount = StringField("Amount", validators=[DataRequired()])
     exp_description = TextAreaField(
         "Description", validators=[DataRequired(), Length(max=500)]
     )
     exp_submit = SubmitField("Submit", name="form2_submit")
+
+    def validate_exp_amount(self, field):
+        if not field.data.isdigit():
+            raise ValidationError("Amount must be a number.")
+        if float(field.data) <= 0:
+            raise ValidationError("Amount must be greater than 0.")
