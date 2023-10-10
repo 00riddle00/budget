@@ -4,6 +4,7 @@ from flask_mail import Message
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from .. import db, mail
+from ..email import send_email
 from ..main.views import load_user_picture
 from ..models import User
 from . import auth
@@ -87,31 +88,22 @@ def logout():
     return render_template("index.html", picture_url=picture_url)
 
 
-def send_reset_email(user):
-    token = user.generate_reset_token()
-    msg = Message(
-        "Slaptažodžio atnaujinimo užklausa",
-        sender="ptua6.real4dmin@gmail.com",
-        recipients=[user.email],
-    )
-    msg.body = (
-        f"Norėdami atnaujinti slaptažodį, paspauskite nuorodą: "
-        f"{url_for('auth.reset_token', token=token, _external=True)} "
-        f"Jei jūs nedarėte šios užklausos, nieko nedarykite ir "
-        f"slaptažodis nebus pakeistas."
-    )
-    mail.send(msg)
-
-
-@auth.route("/reset_password", methods=["GET", "POST"])
-def reset_request():
+@auth.route("/reset", methods=["GET", "POST"])
+def password_reset_request():
     if current_user.is_authenticated:
         return redirect(url_for("main.index"))
     form = PasswordResetRequestForm()
     try:
         if form.validate_on_submit():
             user = User.query.filter_by(email=form.email.data).first()
-            send_reset_email(user)
+            token = user.generate_reset_token()
+            send_email(
+                to=user.email,
+                subject="Slaptažodžio atnaujinimo užklausa",
+                template="auth/email/reset_password",
+                username=user.username,
+                token=token,
+            )
             flash(
                 "Jums išsiųstas el. laiškas su slaptažodžio atnaujinimo "
                 "instrukcijomis.",
@@ -120,20 +112,20 @@ def reset_request():
             return redirect(url_for("auth.login"))
     except Exception as e:
         flash(f"An error occurred while registering: {e}")
-        return redirect(url_for("auth.reset_request"))
+        return redirect(url_for("auth.password_reset_request"))
     return render_template(
         "reset_request.html", title="Reset Password", form=form
     )
 
 
-@auth.route("/reset_password/<token>", methods=["GET", "POST"])
-def reset_token(token):
+@auth.route("/reset/<token>", methods=["GET", "POST"])
+def password_reset(token):
     if current_user.is_authenticated:
         return redirect(url_for("main.index"))
     user = User.verify_reset_token(token)
     if user is None:
         flash("Užklausa netinkama arba pasibaigusio galiojimo", "warning")
-        return redirect(url_for("reset_request"))
+        return redirect(url_for("password_reset_request"))
     form = PasswordResetForm()
     if form.validate_on_submit():
         hashed_password = generate_password_hash(
