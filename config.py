@@ -5,9 +5,6 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config:
     APP_NAME = os.environ.get("APP_NAME", "Budget App")
-    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL") or (
-        f"sqlite:///{os.path.join(basedir, 'budget-db.sqlite')}"
-    )
 
     # The Flask-SQLAlchemy documentation also suggests to set this key to False
     # to use less memory unless signals for object changes are needed.
@@ -41,18 +38,24 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL") or (
-        f"sqlite:///{os.path.join(basedir, 'budget-db.sqlite')}"
+    SQLALCHEMY_DATABASE_URI = os.environ.get(
+        "DEV_DATABASE_URL",
+        f"sqlite:///{os.path.join(basedir, 'budget-dev.sqlite')}",
     )
 
 
 class TestingConfig(Config):
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
+    # For testing the default is an in-memory database, since there is no
+    # need to store any data outside the test run.
+    SQLALCHEMY_DATABASE_URI = os.environ.get("TEST_DATABASE_URL", "sqlite://")
+    WTF_CSRF_ENABLED = False
 
 
 class ProductionConfig(Config):
-    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
+    SQLALCHEMY_DATABASE_URI = os.environ.get(
+        "DATABASE_URL", f"sqlite:///{os.path.join(basedir, 'budget.sqlite')}"
+    )
 
 
 config = {

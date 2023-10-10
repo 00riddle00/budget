@@ -41,7 +41,7 @@ export FLASK_DEBUG=1
 ###### You can also export a database URL and a secret key, but it is not necessary:
 
 ```Shell
-export DATABASE_URL="sqlite:///$(pwd)/budget-db.sqlite" # You can use a full path to your database file.
+export DEV_DATABASE_URL="sqlite:///$(pwd)/budget-db.sqlite" # You can use a full path to your database file.
 export SECRET_KEY="{YOUR SECRET KEY}"
 ```
 
