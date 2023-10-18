@@ -74,7 +74,7 @@ class User(UserMixin, db.Model):
         if self.is_authenticated:
             user_picture = self.profile_picture
         return url_for(
-            "static", filename=f"user_profile_pictures/{user_picture}"
+            "static", filename=f"img/user_profile_pictures/{user_picture}"
         )
 
     @staticmethod
@@ -83,7 +83,9 @@ class User(UserMixin, db.Model):
         _, f_ext = os.path.splitext(form_picture.filename)
         picture_fn = random_hex + f_ext
         picture_path = os.path.join(
-            current_app.root_path, "static/user_profile_pictures", picture_fn
+            current_app.root_path,
+            "static/img/user_profile_pictures",
+            picture_fn,
         )
         output_size = (125, 125)
         i = Image.open(form_picture)
