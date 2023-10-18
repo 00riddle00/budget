@@ -45,6 +45,9 @@
                     <ul class="dropdown-menu">
                         {% if current_user.is_authenticated %}
                             <li><a class="dropdown-item" href="{{ url_for('main.user_update') }}">Profile</a></li>
+                            {% if current_user.email == config["ADMIN_EMAIL"] %}
+                                <li><a class="dropdown-item" href="{{ url_for('admin.index') }}">Admin Panel</a></li>
+                            {% endif %}
                             <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
                         {% else %}
                             <li><a class="dropdown-item" href="{{ url_for('auth.login') }}">Login</a></li>
