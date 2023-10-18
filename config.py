@@ -14,6 +14,7 @@ class Config:
     SECRET_KEY = os.environ.get(
         "SECRET_KEY", b"LPhW~G@?b{*k'8;&MQbT=[~(M-VzDMKk.rP$kAnK"
     )
+    ADMIN_EMAIL = os.environ.get("ADMIN_EMAIL", "tomasgiedraitis@gmail.com")
     MAIL_SERVER = os.environ.get("MAIL_SERVER", "smtp.gmail.com")
     MAIL_PORT = int(os.environ.get("MAIL_PORT", "587"))
     MAIL_USE_TLS = os.environ.get("MAIL_USE_TLS", "true").lower() in [

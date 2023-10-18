@@ -1,9 +1,10 @@
 from datetime import datetime
 
-from flask import redirect, render_template, request, url_for
+from flask import current_app, redirect, render_template, request, url_for
+from flask_admin.contrib.sqla import ModelView
 from flask_login import current_user, login_required
 
-from .. import db
+from .. import admin, db
 from ..models import Expense, Income, User
 from . import main
 from .forms import ExpenseForm, IncomeForm, UserUpdateForm
@@ -150,3 +151,16 @@ def remove_entry(table, entry_id):
         form1=form_income,
         form2=form_expense,
     )
+
+
+class AdminView(ModelView):
+    def is_accessible(self):
+        return (
+            current_user.is_authenticated
+            and current_user.email == current_app.config["ADMIN_EMAIL"]
+        )
+
+
+admin.add_view(AdminView(User, db.session))
+admin.add_view(AdminView(Income, db.session))
+admin.add_view(AdminView(Expense, db.session))
