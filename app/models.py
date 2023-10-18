@@ -60,15 +60,6 @@ class User(UserMixin, db.Model):
         self.password_hash = password_hash
         self.email = email
 
-    def get_entries(self):
-        # Query the database for the user's entries.
-        income_data = Income.query.filter_by(user_id=self.id).all()
-        expense_data = Expense.query.filter_by(user_id=self.id).all()
-        income_total = sum([i.amount for i in income_data])
-        expense_total = sum([i.amount for i in expense_data])
-        balance = income_total - expense_total
-        return income_data, expense_data, income_total, expense_total, balance
-
     def get_picture_url(self):
         user_picture = "default.jpg"
         if self.is_authenticated:

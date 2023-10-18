@@ -41,6 +41,8 @@ def user_update():
 def budget():
     form_income = IncomeForm()
     form_expense = ExpenseForm()
+    income_page = request.args.get("income_page", 1, type=int)
+    expense_page = request.args.get("expense_page", 1, type=int)
     picture_url = User.get_picture_url(current_user)
     if request.method == "POST":
         if "form1_submit" in request.form and form_income.validate_on_submit():
@@ -82,50 +84,37 @@ def budget():
                 )
             )
             db.session.commit()
-        (
-            income_data,
-            expense_data,
-            income_total,
-            expense_total,
-            balance,
-        ) = current_user.get_entries()
-        return render_template(
-            "budget.html",
-            income_data=income_data,
-            expense_data=expense_data,
-            income_total=income_total,
-            expense_total=expense_total,
-            balance=balance,
-            form1=form_income,
-            form2=form_expense,
-            picture_url=picture_url,
-        )
-    else:
-        (
-            income_data,
-            expense_data,
-            income_total,
-            expense_total,
-            balance,
-        ) = current_user.get_entries()
-        return render_template(
-            "budget.html",
-            income_data=income_data,
-            expense_data=expense_data,
-            income_total=income_total,
-            expense_total=expense_total,
-            balance=balance,
-            form1=form_income,
-            form2=form_expense,
-            picture_url=picture_url,
-        )
+    income_data = Income.query.filter_by(user_id=current_user.id).order_by(
+        Income.entry_date.desc()
+    )
+    expense_data = Expense.query.filter_by(user_id=current_user.id).order_by(
+        Expense.entry_date.desc()
+    )
+    income_total = sum([i.amount for i in income_data])
+    expense_total = sum([i.amount for i in expense_data])
+    balance = income_total - expense_total
+    return render_template(
+        "budget.html",
+        income_data=income_data.paginate(
+            page=income_page, per_page=4, error_out=False
+        ),
+        expense_data=expense_data.paginate(
+            page=expense_page, per_page=4, error_out=False
+        ),
+        income_total=income_total,
+        expense_total=expense_total,
+        balance=balance,
+        form1=form_income,
+        form2=form_expense,
+        picture_url=picture_url,
+    )
 
 
 @main.route("/remove_entry/<table>/<int:entry_id>", methods=["GET", "POST"])
 @login_required
 def remove_entry(table, entry_id):
-    form_income = IncomeForm()
-    form_expense = ExpenseForm()
+    income_page = request.args.get("income_page", 1, type=int)
+    expense_page = request.args.get("expense_page", 1, type=int)
     if table == "Income":
         income_entry = Income.query.get_or_404(entry_id)
         db.session.delete(income_entry)
@@ -134,22 +123,10 @@ def remove_entry(table, entry_id):
         expense_entry = Expense.query.get_or_404(entry_id)
         db.session.delete(expense_entry)
         db.session.commit()
-    (
-        income_data,
-        expense_data,
-        income_total,
-        expense_total,
-        balance,
-    ) = current_user.get_entries()
-    return render_template(
-        "budget.html",
-        income_data=income_data,
-        expense_data=expense_data,
-        income_total=income_total,
-        expense_total=expense_total,
-        balance=balance,
-        form1=form_income,
-        form2=form_expense,
+    return redirect(
+        url_for(
+            "main.budget", income_page=income_page, expense_page=expense_page
+        )
     )
 
 

@@ -16,8 +16,9 @@
                 <strong>Create new income entry</strong>
             </div>
             <div class="card-body">
-                <form action="{{ url_for('main.budget') }}" method="post" name="form1" autocomplete="off">
-                    {{ form1.hidden_tag() }}
+                <form action="{{ url_for('main.budget', income_page=income_data.page, expense_page=expense_data.page) }}"
+                      method="post" name="form1" autocomplete="off">
+                {{ form1.hidden_tag() }}
                     <div style="margin-top: 8px">
                         {{ form1.inc_amount(class="form-control", placeholder="Enter amount...") }}
                     </div>
@@ -45,8 +46,9 @@
                 <strong>Create new expense entry</strong>
             </div>
             <div class="card-body">
-                <form action="{{ url_for('main.budget') }}" name="form2" method="post" autocomplete="off">
-                    {{ form2.hidden_tag() }}
+                <form action="{{ url_for('main.budget', income_page=income_data.page, expense_page=expense_data.page) }}"
+                      name="form2" method="post" autocomplete="off">
+                {{ form2.hidden_tag() }}
                     <div>
                         {% for subfield in form2.exp_payment_option %}
                             <tr>
@@ -83,32 +85,50 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                        <tr>
-                            <th class="header" scope="col">Date</th>
-                            <th class="header" scope="col">Sender</th>
-                            <th class="header" scope="col">Description</th>
-                            <th class="header" scope="col">Amount</th>
-                            <th class="header" scope="col">Actions</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for data in income_data %}
-                            <tr>
-                                <th scope="row">{{ data.entry_date }}</th>
-                                <td>{{ data.sender }}</td>
-                                <td>{{ data.description }}</td>
-                                <td>{{ data.amount }}</td>
-                                <td>
-                                    <a href="{{ url_for('main.remove_entry', table='Income', entry_id=data.id) }}">
-                                        <span class="material-symbols-outlined">delete</span>
-                                    </a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
+                <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th class="header" scope="col">Date</th>
+                        <th class="header" scope="col">Sender</th>
+                        <th class="header" scope="col">Description</th>
+                        <th class="header" scope="col">Amount</th>
+                        <th class="header" scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for data in income_data.items %}
+                    <tr>
+                        <th scope="row">{{ data.entry_date }}</th>
+                        <td>{{ data.sender }}</td>
+                        <td>{{ data.description }}</td>
+                        <td>{{ data.amount }}</td>
+                        <td>
+                            <a href="{{ url_for('main.remove_entry', table='Income',
+                                entry_id=data.id, income_page=income_data.page, expense_page=expense_data.page ) }}">
+                                <span class="material-symbols-outlined">delete</span>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                {% for page_num in income_data.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                    {% if page_num %}
+                        {% if income_data.page == page_num %}
+                            <a class="btn btn-info mb-4"
+                               href="{{ url_for('main.budget', income_page=page_num, expense_page=expense_data.page) }}">
+                                {{ page_num }}
+                            </a>
+                        {% else %}
+                            <a class="btn btn-outline-info mb-4"
+                               href="{{ url_for('main.budget', income_page=page_num, expense_page=expense_data.page) }}">
+                                {{ page_num }}
+                            </a>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+                </tfoot>
+                </table>
                 </div>
             </div>
         </div>
@@ -123,32 +143,48 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                        <tr>
-                            <th class="header" scope="col">Date</th>
-                            <th class="header" scope="col">Sender</th>
-                            <th class="header" scope="col">Description</th>
-                            <th class="header" scope="col">Amount</th>
-                            <th class="header" scope="col">Actions</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for data in expense_data %}
-                            <tr>
-                                <th scope="row">{{ data.entry_date }}</th>
-                                <td>{{ data.payment_option }}</td>
-                                <td>{{ data.description }}</td>
-                                <td>{{ data.amount }}</td>
-                                <td>
-                                    <a href="{{ url_for('main.remove_entry', table='Expense', entry_id=data.id) }}">
-                                        <span class="material-symbols-outlined">delete</span>
-                                    </a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
+                <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th class="header" scope="col">Date</th>
+                    <th class="header" scope="col">Sender</th>
+                    <th class="header" scope="col">Description</th>
+                    <th class="header" scope="col">Amount</th>
+                    <th class="header" scope="col">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for data in expense_data %}
+                    <tr>
+                        <th scope="row">{{ data.entry_date }}</th>
+                        <td>{{ data.payment_option }}</td>
+                        <td>{{ data.description }}</td>
+                        <td>{{ data.amount }}</td>
+                        <td>
+                            <a href="{{ url_for('main.remove_entry', table='Expense',
+                                entry_id=data.id, income_page=income_data.page, expense_page=expense_data.page ) }}">
+                                <span class="material-symbols-outlined">delete</span>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                {% for page_num in expense_data.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                    {% if page_num %}
+                        {% if expense_data.page == page_num %}
+                            <a class="btn btn-info mb-4"
+                               href="{{ url_for('main.budget', income_page=income_data.page, expense_page=page_num) }}">
+                                {{ page_num }}</a>
+                        {% else %}
+                            <a class="btn btn-outline-info mb-4"
+                               href="{{ url_for('main.budget', income_page=income_data.page, expense_page=page_num) }}">
+                                {{ page_num }}</a>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+                </tfoot>
+                </table>
                 </div>
             </div>
         </div>
