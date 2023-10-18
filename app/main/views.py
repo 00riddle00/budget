@@ -19,8 +19,6 @@ def index():
 @login_required
 def user_update():
     form = UserUpdateForm()
-    form.username.data = current_user.username
-    form.email.data = current_user.email
     if form.validate_on_submit():
         if form.profile_picture.data:
             picture_name = current_user.upload_picture_and_get_url(
@@ -31,6 +29,8 @@ def user_update():
         current_user.email = form.email.data
         db.session.commit()
         return redirect(url_for("main.user_update"))
+    form.username.data = current_user.username
+    form.email.data = current_user.email
     picture_url = User.get_picture_url(current_user)
     return render_template("profile.html", form=form, picture_url=picture_url)
 
