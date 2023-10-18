@@ -25,7 +25,7 @@ class UserUpdateForm(FlaskForm):
     )
     profile_picture = FileField(
         "Profile Picture",
-        validators=[FileAllowed(["jpg", "png"]), Length(min=5, max=250)],
+        validators=[FileAllowed(["jpg", "png"])],
     )
     submit = SubmitField("Update")
 
