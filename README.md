@@ -151,7 +151,7 @@ riddle  ALL=(ALL:ALL) ALL
 
 `cd /home/riddle`
 
-`git clone <repository with budget project, with the root directory called "budget"> .`
+`git clone <repository with budget project, with the project root directory called "budget"> .`
 
 `python3 -V`
 
