@@ -7,7 +7,7 @@
 #### Create virtual environment in project's root directory:
 
 ```Shell
-python -m venv venv
+python3.11 -m venv venv
 ```
 
 #### Activate the virtual environment:
@@ -29,6 +29,12 @@ python -m venv venv
 pip install -r requirements.txt
 ```
 
+#### [Optional] Install the packages used for development:
+
+```Shell
+pip install -r optional-requirements.txt
+```
+
 ## Running
 
 ##### [1] Set the environment variables:
@@ -41,7 +47,7 @@ export FLASK_DEBUG=1
 ###### You can also export a database URL and a secret key, but it is not necessary:
 
 ```Shell
-export DEV_DATABASE_URL="sqlite:///$(pwd)/budget-db.sqlite" # You can use a full path to your database file.
+export DEV_DATABASE_URL="sqlite:///$(pwd)/budget-dev.sqlite" # You can use a full path to your database file.
 export SECRET_KEY="{YOUR SECRET KEY}"
 ```
 
@@ -84,6 +90,15 @@ flask run
 ```Shell
 flask --app budget.py --debug run # You can also run the app from the budget.py file in PyCharm.
 ```
+
+## Using
+
+In the [budget-dev.sqlite](budget-dev.sqlite) database (which is in this Git repo) there is already a user with the
+following credentials:
+
+username: `riddle`
+
+password: `testtest`
 
 ## Software dependencies
 
