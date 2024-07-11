@@ -1,0 +1,33 @@
+// Use DBML to define your database structure
+// Diagram builder: https://dbdiagram.io/
+// Docs: https://dbml.dbdiagram.io/docs
+
+Table user {
+  id integer [primary key]
+  username varchar
+  password_hash varchar
+  email varchar
+  profile_picture varchar
+}
+
+Table income {
+  id integer [primary key]
+  user_id integer
+  amount float
+  sender varchar
+  description varchar
+  entry_date datetime
+}
+
+Table expense {
+  id integer [primary key]
+  user_id integer
+  amount float
+  payment_option varchar
+  description varchar
+  entry_date datetime
+}
+
+Ref: user.id < income.user_id // one-to-many
+
+Ref: user.id < expense.user_id // one-to-many
